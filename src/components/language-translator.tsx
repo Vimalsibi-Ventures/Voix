@@ -33,6 +33,12 @@ const allLanguages = [
   { value: 'Japanese', label: 'Japanese' },
   { value: 'Italian', label: 'Italian' },
   { value: 'Portuguese', label: 'Portuguese' },
+  { value: 'Chinese (Simplified)', label: 'Chinese (Simplified)' },
+  { value: 'Russian', label: 'Russian' },
+  { value: 'Arabic', label: 'Arabic' },
+  { value: 'Hindi', label: 'Hindi' },
+  { value: 'Korean', label: 'Korean' },
+  { value: 'Dutch', label: 'Dutch' },
 ];
 
 const audiences = [
@@ -247,7 +253,7 @@ export function LanguageTranslator() {
               </div>
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex justify-center">
             <Button type="submit" disabled={isPending} className="w-full md:w-auto">
               {isPending ? (
                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait</>

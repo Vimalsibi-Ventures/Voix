@@ -17,13 +17,6 @@ export default function Home() {
           <LanguageTranslator />
         </div>
       </main>
-      <footer className="py-6 md:px-8 md:py-0">
-        <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
-          <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
-            Powered by Genkit. Your text is not stored on our servers after translation.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
