@@ -114,9 +114,6 @@ export function LanguageTranslator() {
   const availableSourceLanguages = allLanguages.filter(lang => lang.value !== targetLanguage);
 
   React.useEffect(() => {
-    // This effect ensures that the source and target languages are never the same.
-    // If a user changes the source language to be the same as the target,
-    // it finds the next available language for the target.
     if (sourceLanguage === targetLanguage) {
       const newTarget = allLanguages.find(lang => lang.value !== sourceLanguage)?.value;
       if (newTarget) {
@@ -127,23 +124,25 @@ export function LanguageTranslator() {
 
 
   function swapLanguages() {
-    const currentSource = form.getValues('sourceLanguage');
-    const currentTarget = form.getValues('targetLanguage');
+    const currentSourceLang = form.getValues('sourceLanguage');
+    const currentTargetLang = form.getValues('targetLanguage');
     const currentText = form.getValues('text');
+    const currentTranslation = result?.translation;
 
-    // Swap the language selections
-    form.setValue('sourceLanguage', currentTarget);
-    form.setValue('targetLanguage', currentSource);
+    form.setValue('sourceLanguage', currentTargetLang);
+    form.setValue('targetLanguage', currentSourceLang);
     
-    // Swap the text content
-    form.setValue('text', result?.translation || '');
-
-    // Swap the results in the state
-    setResult(currentText ? {
+    if (currentTranslation) {
+      form.setValue('text', currentTranslation);
+    }
+    
+    if (result) {
+      setResult({
         translation: currentText,
-        originalSentiment: result?.translatedSentiment || { sentiment: 'neutral', score: 0.5},
-        translatedSentiment: result?.originalSentiment || { sentiment: 'neutral', score: 0.5},
-    } : null);
+        originalSentiment: result.translatedSentiment,
+        translatedSentiment: result.originalSentiment,
+      });
+    }
   }
 
 
@@ -225,7 +224,7 @@ export function LanguageTranslator() {
                         <SelectTrigger><SelectValue placeholder="Select a language" /></SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {availableSourceLanguages.map((lang) => <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>)}
+                        {allLanguages.map((lang) => <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -248,7 +247,7 @@ export function LanguageTranslator() {
                         <SelectTrigger><SelectValue placeholder="Select a language" /></SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {availableTargetLanguages.map((lang) => <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>)}
+                        {allLanguages.map((lang) => <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -311,3 +310,5 @@ export function LanguageTranslator() {
     </Card>
   );
 }
+
+    
