@@ -129,7 +129,7 @@ export function LanguageTranslator() {
 
   return (
     <Card className="w-full max-w-5xl mx-auto shadow-lg">
-      <CardHeader>
+      <CardHeader className="text-center">
         <CardTitle className="font-headline text-3xl">Creative Language Translator</CardTitle>
         <CardDescription>
           Adapt text between languages and writing styles, preserving meaning, tone, and stylistic subtleties.
