@@ -45,8 +45,12 @@ const audiences = [
   { value: 'General', label: 'General' },
   { value: 'Children', label: 'Children' },
   { value: 'Teenagers', label: 'Teenagers' },
+  { value: 'Young Adults', label: 'Young Adults' },
   { value: 'Professionals', label: 'Professionals' },
   { value: 'Academics', label: 'Academics' },
+  { value: 'Experts', label: 'Experts' },
+  { value: 'Tourists', label: 'Tourists' },
+  { value: 'Marketing', label: 'Marketing' },
 ];
 
 const tones = [
@@ -56,6 +60,10 @@ const tones = [
   { value: 'Friendly', label: 'Friendly' },
   { value: 'Poetic', label: 'Poetic' },
   { value: 'Humorous', label: 'Humorous' },
+  { value: 'Assertive', label: 'Assertive' },
+  { value: 'Empathetic', label: 'Empathetic' },
+  { value: 'Technical', label: 'Technical' },
+  { value: 'Sarcastic', label: 'Sarcastic' },
 ];
 
 export function LanguageTranslator() {
