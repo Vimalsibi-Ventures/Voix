@@ -110,8 +110,6 @@ export function LanguageTranslator() {
   const sourceLanguage = form.watch('sourceLanguage');
   const targetLanguage = form.watch('targetLanguage');
 
-  const availableTargetLanguages = allLanguages.filter(lang => lang.value !== sourceLanguage);
-  const availableSourceLanguages = allLanguages.filter(lang => lang.value !== targetLanguage);
 
   React.useEffect(() => {
     if (sourceLanguage === targetLanguage) {
@@ -132,18 +130,17 @@ export function LanguageTranslator() {
     form.setValue('sourceLanguage', currentTargetLang);
     form.setValue('targetLanguage', currentSourceLang);
     
-    if (currentTranslation) {
-      form.setValue('text', currentTranslation);
+    if (result && currentTranslation) {
+        form.setValue('text', currentTranslation);
+        setResult({
+            translation: currentText,
+            originalSentiment: result.translatedSentiment,
+            translatedSentiment: result.originalSentiment,
+        });
+    } else {
+        setResult(null);
     }
-    
-    if (result) {
-      setResult({
-        translation: currentText,
-        originalSentiment: result.translatedSentiment,
-        translatedSentiment: result.originalSentiment,
-      });
-    }
-  }
+}
 
 
   function onSubmit(values: z.infer<typeof FormSchema>) {
@@ -310,5 +307,3 @@ export function LanguageTranslator() {
     </Card>
   );
 }
-
-    
