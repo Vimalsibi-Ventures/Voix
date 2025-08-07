@@ -114,21 +114,31 @@ export function LanguageTranslator() {
   const availableSourceLanguages = allLanguages.filter(lang => lang.value !== targetLanguage);
 
   React.useEffect(() => {
+    // This effect ensures that the source and target languages are never the same.
+    // If a user changes the source language to be the same as the target,
+    // it finds the next available language for the target.
     if (sourceLanguage === targetLanguage) {
       const newTarget = allLanguages.find(lang => lang.value !== sourceLanguage)?.value;
       if (newTarget) {
-        form.setValue('targetLanguage', newTarget);
+        form.setValue('targetLanguage', newTarget, { shouldValidate: true });
       }
     }
   }, [sourceLanguage, targetLanguage, form]);
 
+
   function swapLanguages() {
+    const currentSource = form.getValues('sourceLanguage');
+    const currentTarget = form.getValues('targetLanguage');
     const currentText = form.getValues('text');
-    const newSource = targetLanguage;
-    const newTarget = sourceLanguage;
-    form.setValue('sourceLanguage', newSource);
-    form.setValue('targetLanguage', newTarget);
+
+    // Swap the language selections
+    form.setValue('sourceLanguage', currentTarget);
+    form.setValue('targetLanguage', currentSource);
+    
+    // Swap the text content
     form.setValue('text', result?.translation || '');
+
+    // Swap the results in the state
     setResult(currentText ? {
         translation: currentText,
         originalSentiment: result?.translatedSentiment || { sentiment: 'neutral', score: 0.5},
