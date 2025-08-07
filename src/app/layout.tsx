@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'LinguaWeave',
+  title: 'Voix',
   description: 'An AI-powered translation system that adapts text between languages and writing styles.',
 };
 
