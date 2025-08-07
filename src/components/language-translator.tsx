@@ -26,19 +26,31 @@ const FormSchema = z.object({
 });
 
 const allLanguages = [
-  { value: 'English', label: 'English' },
-  { value: 'Spanish', label: 'Spanish' },
-  { value: 'French', label: 'French' },
-  { value: 'German', label: 'German' },
-  { value: 'Japanese', label: 'Japanese' },
-  { value: 'Italian', label: 'Italian' },
-  { value: 'Portuguese', label: 'Portuguese' },
-  { value: 'Chinese (Simplified)', label: 'Chinese (Simplified)' },
-  { value: 'Russian', label: 'Russian' },
-  { value: 'Arabic', label: 'Arabic' },
-  { value: 'Hindi', label: 'Hindi' },
-  { value: 'Korean', label: 'Korean' },
-  { value: 'Dutch', label: 'Dutch' },
+    { value: 'English', label: 'English' },
+    { value: 'Spanish', label: 'Spanish' },
+    { value: 'French', label: 'French' },
+    { value: 'German', label: 'German' },
+    { value: 'Japanese', label: 'Japanese' },
+    { value: 'Italian', label: 'Italian' },
+    { value: 'Portuguese', label: 'Portuguese' },
+    { value: 'Chinese (Simplified)', label: 'Chinese (Simplified)' },
+    { value: 'Russian', label: 'Russian' },
+    { value: 'Arabic', label: 'Arabic' },
+    { value: 'Hindi', label: 'Hindi' },
+    { value: 'Korean', label: 'Korean' },
+    { value: 'Dutch', label: 'Dutch' },
+    { value: 'Indonesian', label: 'Indonesian' },
+    { value: 'Bengali', label: 'Bengali' },
+    { value: 'Urdu', label: 'Urdu' },
+    { value: 'Turkish', label: 'Turkish' },
+    { value: 'Vietnamese', label: 'Vietnamese' },
+    { value: 'Thai', label: 'Thai' },
+    { value: 'Polish', label: 'Polish' },
+    { value: 'Ukrainian', label: 'Ukrainian' },
+    { value: 'Swedish', label: 'Swedish' },
+    { value: 'Greek', label: 'Greek' },
+    { value: 'Hebrew', label: 'Hebrew' },
+    { value: 'Swahili', label: 'Swahili' },
 ];
 
 const audiences = [
@@ -51,6 +63,12 @@ const audiences = [
   { value: 'Experts', label: 'Experts' },
   { value: 'Tourists', label: 'Tourists' },
   { value: 'Marketing', label: 'Marketing' },
+  { value: 'Scientists', label: 'Scientists' },
+  { value: 'Gamers', label: 'Gamers' },
+  { value: 'Social Media Users', label: 'Social Media Users' },
+  { value: 'Legal Professionals', label: 'Legal Professionals' },
+  { value: 'Medical Professionals', label: 'Medical Professionals' },
+  { value: 'Government Officials', label: 'Government Officials' },
 ];
 
 const tones = [
@@ -64,6 +82,13 @@ const tones = [
   { value: 'Empathetic', label: 'Empathetic' },
   { value: 'Technical', label: 'Technical' },
   { value: 'Sarcastic', label: 'Sarcastic' },
+  { value: 'Confident', label: 'Confident' },
+  { value: 'Inspirational', label: 'Inspirational' },
+  { value: 'Cautionary', label: 'Cautionary' },
+  { value: 'Critical', label: 'Critical' },
+  { value: 'Enthusiastic', label: 'Enthusiastic' },
+  { value: 'Dramatic', label: 'Dramatic' },
+  { value: 'Romantic', label: 'Romantic' },
 ];
 
 export function LanguageTranslator() {
@@ -86,6 +111,7 @@ export function LanguageTranslator() {
   const targetLanguage = form.watch('targetLanguage');
 
   const availableTargetLanguages = allLanguages.filter(lang => lang.value !== sourceLanguage);
+  const availableSourceLanguages = allLanguages.filter(lang => lang.value !== targetLanguage);
 
   React.useEffect(() => {
     if (sourceLanguage === targetLanguage) {
@@ -189,7 +215,7 @@ export function LanguageTranslator() {
                         <SelectTrigger><SelectValue placeholder="Select a language" /></SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {allLanguages.map((lang) => <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>)}
+                        {availableSourceLanguages.map((lang) => <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormMessage />
