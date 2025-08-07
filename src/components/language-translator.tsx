@@ -124,43 +124,43 @@ export function LanguageTranslator() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <FormField
-                    control={form.control}
-                    name="targetAudience"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Target Audience</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Select an audience" /></SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {audiences.map((aud) => <SelectItem key={aud.value} value={aud.value}>{aud.label}</SelectItem>)}
-                        </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="desiredTone"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Desired Tone</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Select a tone" /></SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {tones.map((tone) => <SelectItem key={tone.value} value={tone.value}>{tone.label}</SelectItem>)}
-                        </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-lg mx-auto">
+              <FormField
+                control={form.control}
+                name="targetAudience"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Target Audience</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger><SelectValue placeholder="Select an audience" /></SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {audiences.map((aud) => <SelectItem key={aud.value} value={aud.value}>{aud.label}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="desiredTone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Desired Tone</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger><SelectValue placeholder="Select a tone" /></SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {tones.map((tone) => <SelectItem key={tone.value} value={tone.value}>{tone.label}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
