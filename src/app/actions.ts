@@ -7,6 +7,7 @@ import { translateAndAnalyzeSentiment } from '@/ai/flows/translate-and-analyze-s
 
 const FormSchema = z.object({
   text: z.string().min(1, 'Text to translate cannot be empty.').max(5000, 'Text must be 5000 characters or less.'),
+  sourceLanguage: z.string(),
   targetLanguage: z.string(),
   targetAudience: z.string(),
   desiredTone: z.string(),
@@ -30,9 +31,7 @@ export async function getCreativeTranslationAndAnalysis(
     };
   }
 
-  const { text, targetLanguage, targetAudience, desiredTone } = validatedFields.data;
-  
-  const sourceLanguage = 'English'; // Assume source is English for this implementation
+  const { text, sourceLanguage, targetLanguage, targetAudience, desiredTone } = validatedFields.data;
 
   try {
     // Step 1: Get creative translation

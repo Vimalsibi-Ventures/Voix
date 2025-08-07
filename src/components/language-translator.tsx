@@ -1,11 +1,12 @@
 
 'use client';
 
+import * as React from 'react';
 import { useState, useTransition } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Loader2, Sparkles } from 'lucide-react';
+import { ArrowRightLeft, Loader2, Sparkles } from 'lucide-react';
 import { getCreativeTranslationAndAnalysis, type TranslationResult } from '@/app/actions';
 
 import { Button } from '@/components/ui/button';
@@ -18,12 +19,14 @@ import { SentimentMeter } from './sentiment-meter';
 
 const FormSchema = z.object({
   text: z.string().min(1, 'Text to translate cannot be empty.').max(5000, 'Text must be 5000 characters or less.'),
+  sourceLanguage: z.string({ required_error: 'Please select a language.' }),
   targetLanguage: z.string({ required_error: 'Please select a language.' }),
   targetAudience: z.string({ required_error: 'Please select an audience.' }),
   desiredTone: z.string({ required_error: 'Please select a tone.' }),
 });
 
-const languages = [
+const allLanguages = [
+  { value: 'English', label: 'English' },
   { value: 'Spanish', label: 'Spanish' },
   { value: 'French', label: 'French' },
   { value: 'German', label: 'German' },
@@ -58,11 +61,41 @@ export function LanguageTranslator() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       text: '',
+      sourceLanguage: 'English',
       targetLanguage: 'Spanish',
       targetAudience: 'General',
       desiredTone: 'Neutral',
     },
   });
+
+  const sourceLanguage = form.watch('sourceLanguage');
+  const targetLanguage = form.watch('targetLanguage');
+
+  const availableTargetLanguages = allLanguages.filter(lang => lang.value !== sourceLanguage);
+
+  React.useEffect(() => {
+    if (sourceLanguage === targetLanguage) {
+      const newTarget = allLanguages.find(lang => lang.value !== sourceLanguage)?.value;
+      if (newTarget) {
+        form.setValue('targetLanguage', newTarget);
+      }
+    }
+  }, [sourceLanguage, targetLanguage, form]);
+
+  function swapLanguages() {
+    const currentText = form.getValues('text');
+    const newSource = targetLanguage;
+    const newTarget = sourceLanguage;
+    form.setValue('sourceLanguage', newSource);
+    form.setValue('targetLanguage', newTarget);
+    form.setValue('text', result?.translation || '');
+    setResult(currentText ? {
+        translation: currentText,
+        originalSentiment: result?.translatedSentiment || { sentiment: 'neutral', score: 0.5},
+        translatedSentiment: result?.originalSentiment || { sentiment: 'neutral', score: 0.5},
+    } : null);
+  }
+
 
   function onSubmit(values: z.infer<typeof FormSchema>) {
     setResult(null);
@@ -92,54 +125,80 @@ export function LanguageTranslator() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                    control={form.control}
+                    name="targetAudience"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Target Audience</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Select an audience" /></SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            {audiences.map((aud) => <SelectItem key={aud.value} value={aud.value}>{aud.label}</SelectItem>)}
+                        </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="desiredTone"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Desired Tone</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Select a tone" /></SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            {tones.map((tone) => <SelectItem key={tone.value} value={tone.value}>{tone.label}</SelectItem>)}
+                        </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
               <FormField
                 control={form.control}
-                name="targetLanguage"
+                name="sourceLanguage"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Target Language</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormItem className="w-full">
+                    <FormLabel>From</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger><SelectValue placeholder="Select a language" /></SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {languages.map((lang) => <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>)}
+                        {allLanguages.map((lang) => <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              <Button type="button" variant="ghost" size="icon" className="self-end" onClick={swapLanguages} aria-label="Swap languages">
+                  <ArrowRightLeft className="h-5 w-5 text-muted-foreground" />
+              </Button>
+
               <FormField
                 control={form.control}
-                name="targetAudience"
+                name="targetLanguage"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Target Audience</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                       <FormControl>
-                        <SelectTrigger><SelectValue placeholder="Select an audience" /></SelectTrigger>
+                  <FormItem className="w-full">
+                    <FormLabel>To</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger><SelectValue placeholder="Select a language" /></SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {audiences.map((aud) => <SelectItem key={aud.value} value={aud.value}>{aud.label}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="desiredTone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Desired Tone</FormLabel>
-                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                       <FormControl>
-                        <SelectTrigger><SelectValue placeholder="Select a tone" /></SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {tones.map((tone) => <SelectItem key={tone.value} value={tone.value}>{tone.label}</SelectItem>)}
+                        {availableTargetLanguages.map((lang) => <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -158,7 +217,7 @@ export function LanguageTranslator() {
                       <FormLabel>Original Text</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Enter text to translate (e.g., 'The quick brown fox jumps over the lazy dog.')"
+                          placeholder="Enter text to translate..."
                           className="min-h-[200px] resize-y"
                           {...field}
                         />
