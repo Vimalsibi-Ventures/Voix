@@ -97,9 +97,16 @@ export default {
         },
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
+        'accordion-down': 'accordion-down 0.3s ease-out',
+        'accordion-up': 'accordion-up 0.3s ease-out',
       },
+      transitionTimingFunction: {
+        'fluid-spring': 'cubic-bezier(0.4, 0.2, 0, 1.0)',
+      },
+      transitionDuration: {
+        '300': '300ms',
+        '500': '500ms',
+      }
     },
   },
   plugins: [require('tailwindcss-animate')],
