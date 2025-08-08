@@ -1,6 +1,6 @@
 # 🎙️ Voix
 
-**Voix** is a creative language translator built for the **GAI2 Hackathon**.  
+**Voix** is a creative language translator built for the **CodeZilla**.  
 It goes beyond simple, literal translation to preserve the original **meaning, tone, and style** of your content.  
 
 Whether you're translating between languages or transforming your writing style, **Voix** is designed to maintain the **nuance** and **voice** of your text.
