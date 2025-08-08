@@ -4,7 +4,7 @@ import {googleAI} from '@genkit-ai/googleai';
 export const ai = genkit({
   plugins: [
     googleAI({
-      apiKey: "AIzaSyADfZvHcRMhA7GZTnd26YhjjGvH5Y8Z45M"
+      apiKey: "AIzaSyDVoRoOPMAN37v_igwWnwNKt9RzlMruJ_I"
     })
   ],
   model: 'googleai/gemini-2.0-flash',
