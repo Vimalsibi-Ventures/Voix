@@ -1,4 +1,4 @@
-# **App Name**: LinguaWeave
+# **App Name**: Voix
 
 ## Core Features:
 
