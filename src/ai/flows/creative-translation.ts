@@ -22,8 +22,15 @@ const CreativeTranslationInputSchema = z.object({
 
 export type CreativeTranslationInput = z.infer<typeof CreativeTranslationInputSchema>;
 
+const AdaptationSchema = z.object({
+    score: z.number().describe('A score from 0.0 to 1.0 indicating how well the translation meets the requirement.'),
+    justification: z.string().describe('A brief explanation for the score provided.'),
+});
+
 const CreativeTranslationOutputSchema = z.object({
   translatedText: z.string().describe('The translated text, adapted to the specified preferences.'),
+  audienceAdaptation: AdaptationSchema.describe('An analysis of how well the translation is adapted for the target audience.'),
+  toneAdaptation: AdaptationSchema.describe('An analysis of how well the translation captures the desired tone.'),
 });
 
 export type CreativeTranslationOutput = z.infer<typeof CreativeTranslationOutputSchema>;
@@ -36,7 +43,13 @@ const creativeTranslationPrompt = ai.definePrompt({
   name: 'creativeTranslationPrompt',
   input: {schema: CreativeTranslationInputSchema},
   output: {schema: CreativeTranslationOutputSchema},
-  prompt: `Translate the following text from {{sourceLanguage}} to {{targetLanguage}}. Adapt the translation to suit a target audience of {{targetAudience}} and a desired tone of {{desiredTone}}.\n\nText to translate: {{{text}}}`,
+  prompt: `Translate the following text from {{sourceLanguage}} to {{targetLanguage}}. 
+
+Your primary task is to adapt the translation to suit a target audience of **{{targetAudience}}** and a desired tone of **{{desiredTone}}**.
+
+After translating, you must evaluate your own work. Provide a score from 0.0 to 1.0 and a justification for both how well you adapted to the audience and how well you captured the tone.
+
+Text to translate: {{{text}}}`,
 });
 
 const creativeTranslationFlow = ai.defineFlow(

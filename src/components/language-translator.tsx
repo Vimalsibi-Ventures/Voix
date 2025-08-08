@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { SentimentMeter } from './sentiment-meter';
+import { AdaptationMeter } from './adaptation-meter';
 
 const FormSchema = z.object({
   text: z.string().min(1, 'Text to translate cannot be empty.').max(5000, 'Text must be 5000 characters or less.'),
@@ -126,21 +127,24 @@ export function LanguageTranslator() {
     const currentTargetLang = form.getValues('targetLanguage');
     const currentText = form.getValues('text');
     const currentTranslation = result?.translation;
-
+  
     form.setValue('sourceLanguage', currentTargetLang);
     form.setValue('targetLanguage', currentSourceLang);
     
     if (result && currentTranslation) {
-        form.setValue('text', currentTranslation);
-        setResult({
-            translation: currentText,
-            originalSentiment: result.translatedSentiment,
-            translatedSentiment: result.originalSentiment,
-        });
+      form.setValue('text', currentTranslation);
+      setResult({
+        translation: currentText,
+        originalSentiment: result.translatedSentiment,
+        translatedSentiment: result.originalSentiment,
+        audienceAdaptation: result.audienceAdaptation, // This might not be perfectly reciprocal, but it's a reasonable swap
+        toneAdaptation: result.toneAdaptation,
+      });
     } else {
-        setResult(null);
+      form.setValue('text', '');
+      setResult(null);
     }
-}
+  }
 
 
   function onSubmit(values: z.infer<typeof FormSchema>) {
@@ -285,11 +289,25 @@ export function LanguageTranslator() {
                   {!isPending && !result && <div className="flex items-center justify-center h-full text-muted-foreground">Your translation will appear here.</div>}
                   {result && <p className="whitespace-pre-wrap">{result.translation}</p>}
                 </div>
-                <SentimentMeter
-                    isLoading={isPending && !result}
-                    sentiment={result?.translatedSentiment.sentiment}
-                    score={result?.translatedSentiment.score}
-                  />
+                <div className='space-y-4'>
+                    <SentimentMeter
+                        isLoading={isPending && !result}
+                        sentiment={result?.translatedSentiment.sentiment}
+                        score={result?.translatedSentiment.score}
+                    />
+                    <AdaptationMeter
+                        isLoading={isPending && !result}
+                        label="Audience Adaptation"
+                        score={result?.audienceAdaptation.score}
+                        justification={result?.audienceAdaptation.justification}
+                    />
+                     <AdaptationMeter
+                        isLoading={isPending && !result}
+                        label="Tone Adaptation"
+                        score={result?.toneAdaptation.score}
+                        justification={result?.toneAdaptation.justification}
+                    />
+                </div>
               </div>
             </div>
           </CardContent>

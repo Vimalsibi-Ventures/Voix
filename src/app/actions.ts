@@ -2,7 +2,7 @@
 'use server';
 
 import { z } from 'zod';
-import { creativeTranslation } from '@/ai/flows/creative-translation';
+import { creativeTranslation, type CreativeTranslationOutput } from '@/ai/flows/creative-translation';
 import { translateAndAnalyzeSentiment } from '@/ai/flows/translate-and-analyze-sentiment';
 
 const FormSchema = z.object({
@@ -13,10 +13,17 @@ const FormSchema = z.object({
   desiredTone: z.string(),
 });
 
+type AdaptationAnalysis = {
+    score: number;
+    justification: string;
+};
+
 export type TranslationResult = {
   translation: string;
   originalSentiment: { sentiment: string; score: number };
   translatedSentiment: { sentiment: string; score: number };
+  audienceAdaptation: AdaptationAnalysis;
+  toneAdaptation: AdaptationAnalysis;
 };
 
 export async function getCreativeTranslationAndAnalysis(
@@ -34,7 +41,7 @@ export async function getCreativeTranslationAndAnalysis(
   const { text, sourceLanguage, targetLanguage, targetAudience, desiredTone } = validatedFields.data;
 
   try {
-    // Step 1: Get creative translation
+    // Step 1: Get creative translation and adaptation analysis
     const creativeResult = await creativeTranslation({
       text,
       sourceLanguage,
@@ -43,10 +50,10 @@ export async function getCreativeTranslationAndAnalysis(
       desiredTone,
     });
 
-    if (!creativeResult?.translatedText) {
-      throw new Error('Creative translation failed to produce a result.');
+    if (!creativeResult?.translatedText || !creativeResult.audienceAdaptation || !creativeResult.toneAdaptation) {
+      throw new Error('Creative translation failed to produce a complete result.');
     }
-    const translatedText = creativeResult.translatedText;
+    const { translatedText, audienceAdaptation, toneAdaptation } = creativeResult;
 
     // Step 2 & 3: Get sentiment for original and translated text in parallel
     const [originalAnalysis, translatedAnalysis] = await Promise.all([
@@ -66,6 +73,8 @@ export async function getCreativeTranslationAndAnalysis(
       originalSentiment: originalAnalysis.originalTextSentiment,
       // We use originalTextSentiment from the second call because its input was our translated text
       translatedSentiment: translatedAnalysis.originalTextSentiment,
+      audienceAdaptation,
+      toneAdaptation,
     };
 
     return { data: result, error: null };
